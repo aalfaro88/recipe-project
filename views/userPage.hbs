@@ -1,0 +1,23 @@
+<h1>
+  Welcome
+  {{#if user.firstName}}
+    , {{user.firstName}}
+  {{/if}}
+  !
+</h1>
+
+<div>
+  <h2>Profile</h2>
+  <p>Email: {{user.email}}</p>
+  <p>Username: {{user.userName}}</p>
+  <a href="/users/edit">Edit Profile</a>
+</div>
+
+<div>
+  <h2>My Recipes</h2>
+  <ul>
+    {{#each recipes}}
+      <li><a href="/recipes/{{this._id}}">{{this.title}}</a></li>
+    {{/each}}
+  </ul>
+</div>

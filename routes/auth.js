@@ -18,12 +18,11 @@ router.post("/signup", (req, res, next) => {
       res.render("auth/signup", { errorMessage: "All fields are mandatory." });
       return;
     }
-  
-    // Check if the username or email already exists in the database
+
     User.exists({ $or: [{ email }, { userName }] })
       .then((userExists) => {
         if (userExists) {
-          // User with the same email or username already exists
+
           res.render("auth/signup", { errorMessage: "Username or email is already in use." });
           return;
         }
@@ -50,7 +49,11 @@ router.post("/signup", (req, res, next) => {
         next(error);
       });
 });
-  
+
+router.get('/login', (req, res, next) => {
+    res.render('auth/login.hbs')
+})
+
 
 router.post('/login', (req, res, next) => {
     const { userName, password } = req.body;

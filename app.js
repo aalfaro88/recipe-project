@@ -69,6 +69,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(x => {
@@ -78,4 +80,6 @@ mongoose
     console.log(`An error occurred while connecting to the Database: ${err}`);
   });
 
+
+  
 module.exports = app;

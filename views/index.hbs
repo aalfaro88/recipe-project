@@ -1,2 +1,15 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<h1>Welcome to the Recipe Portal</h1>
+{{#if recipes}}
+  <h2>Enjoy one of the favorite recipes!</h2>
+  <ul>
+    {{#each recipes}}
+      <li>
+        <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
+        <h4>Rating: {{avg_rating}}/5</h4>
+        <p>{{description}}</p>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No recipes found.</p>
+{{/if}}

@@ -7,9 +7,14 @@
   <body>
     <nav>
       <a href="/">Home</a>
-      <a href="/auth/signup">Signup</a>
-      <a href="/auth/login">Login</a>
-
+      {{#if user}}
+        <form action="/auth/logout" method="GET">
+          <button type="submit">Logout</button>
+        </form>
+      {{else}}
+        <a href="/auth/signup">Signup</a>
+        <a href="/auth/login">Login</a>
+      {{/if}}
     </nav>
     {{{body}}}
   </body>

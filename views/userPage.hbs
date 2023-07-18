@@ -17,7 +17,25 @@
   <h2>My Recipes</h2>
   <ul>
     {{#each recipes}}
-      <li><a href="/recipes/{{this._id}}">{{this.title}}</a></li>
+    <li><a href="/recipes/{{this._id}}">{{this.name}}</a></li>
+    <li>{{this.description}}</li>
+    <li>
+        Ingredients:
+        <ul>
+        {{#each this.ingredients}}
+            <li>{{this}}</li>
+        {{/each}}
+        </ul>
+    </li>
+    <li>
+        Steps:
+        <ol>
+        {{#each this.steps}}
+            <li>{{this}}</li>
+        {{/each}}
+        </ol>
+    </li>
     {{/each}}
   </ul>
+  <a href="/users/recipes/new">Add New Recipe</a>
 </div>

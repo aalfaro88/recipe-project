@@ -35,67 +35,55 @@ const updateProfile = async (req, res) => {
 };
 
 const getNewRecipePage = (req, res) => {
-  res.render('newRecipe');
-};
-
-// Define ingredientsRecipe at the global level
-const ingredientsRecipe = [];
+    res.render('newRecipe', { user: req.session.user })
+  };
+  
 
 const createRecipe = async (req, res) => {
-  const { name, minutes, steps, description } = req.body;
-  const userId = req.session.user._id;
-
-  try {
-    const newRecipe = await Recipe.create({
-      name,
-      minutes,
-      steps: steps.trim().split('\n').map((step) => step.trim()),
-      description,
-      user: userId,
-      ingredients: ingredientsRecipe, // Assign the ingredientsRecipe array to the recipe's ingredients field
-    });
-
-    const user = await User.findById(userId).populate('recipes');
-    user.recipes.push(newRecipe);
-    await user.save();
-
-    res.redirect('/users');
-  } catch (error) {
-    console.error(error);
-    res.render('error', { error });
-  }
-};
-
-const saveIngredient = async (req, res) => {
-    const { ingredient } = req.body;
+    const { name, minutes, steps, description } = req.body;
+    const userId = req.session.user._id;
   
     try {
-      // Check if the ingredient already exists in the database
-      const existingIngredient = await Ingredient.findOne({ ingredient });
+      // Get the selected ingredients from the array
+      const selectedIngredients = req.body.ingredients.map((ingredient) => ingredient.trim());
   
-      if (existingIngredient) {
-        console.log('Ingredient already exists:', existingIngredient);
-        ingredientsRecipe.push(existingIngredient.ingredient); // Push existing ingredient to ingredientsRecipe
-        console.log(ingredientsRecipe);
-        return res.status(200).json(existingIngredient);
+      const ingredientsRecipe = [];
+  
+      for (const ingredient of selectedIngredients) {
+        const existingIngredient = await Ingredient.findOne({ ingredient });
+  
+        if (existingIngredient) {
+          console.log('Ingredient already exists:', existingIngredient);
+          ingredientsRecipe.push(existingIngredient.ingredient);
+        } else {
+          const newIngredient = await Ingredient.create({ ingredient });
+          console.log('New ingredient saved:', newIngredient);
+          ingredientsRecipe.push(newIngredient.ingredient);
+        }
       }
   
-      // Create a new ingredient if it doesn't exist
-      const newIngredient = await Ingredient.create({ ingredient });
-      console.log('New ingredient saved:', newIngredient);
-      ingredientsRecipe.push(newIngredient.ingredient); // Push new ingredient to ingredientsRecipe
+      const newRecipe = await Recipe.create({
+        name,
+        minutes,
+        steps: steps.trim().split('\n').map((step) => step.trim()),
+        description,
+        user: userId,
+        ingredients: ingredientsRecipe,
+      });
+  
+      const user = await User.findById(userId).populate('recipes');
+      user.recipes.push(newRecipe);
+      await user.save();
+  
       console.log(ingredientsRecipe);
-  
-      // Call createRecipe function with the updated ingredientsRecipe array
-      createRecipe(req, res);
-  
-      res.status(200).json(newIngredient);
+      res.redirect('/users');
     } catch (error) {
-      console.error('Error saving ingredient:', error);
-      res.status(500).json({ error: 'An error occurred while saving the ingredient.' });
+      console.error(error);
+      res.render('error', { error });
     }
   };
   
+
 const getPredictionOptions = async (req, res) => {
   const { query } = req.query;
 
@@ -110,16 +98,15 @@ const getPredictionOptions = async (req, res) => {
   }
 };
 
-
 const getUser = async (req, res) => {
-    try {
-      const userId = req.session.user._id;
-      const user = await User.findById(userId).populate('recipes');
-      res.render('users', { user });
-    } catch (error) {
-      console.error(error);
-      res.render('error', { error });
-    }
+  try {
+    const userId = req.session.user._id;
+    const user = await User.findById(userId).populate('recipes');
+    res.render('users', { user });
+  } catch (error) {
+    console.error(error);
+    res.render('error', { error });
+  }
 };
 
 const getEditRecipePage = async (req, res) => {
@@ -129,23 +116,22 @@ const getEditRecipePage = async (req, res) => {
       if (!recipe) {
         return res.render('error', { error: 'Recipe not found.' });
       }
-      res.render('editRecipe', { recipe });
+      console.log("recipe was found");
+      res.render('editRecipe', { recipe, user: req.session.user });
     } catch (error) {
       console.error(error);
       res.render('error');
     }
-  };
+};
+
   
-
-
 module.exports = {
-  getUser,  
+  getUser,
   getUserPage,
   getEditProfilePage,
   updateProfile,
   getNewRecipePage,
   createRecipe,
   getPredictionOptions,
-  saveIngredient,
-  getEditRecipePage
+  getEditRecipePage,
 };

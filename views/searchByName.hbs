@@ -1,0 +1,27 @@
+<h1>Search Results by Recipe Name</h1>
+
+{{#if showLimitedResults}}
+  <h2>We found {{numResults}} results matching your search.<br>To refine your results, try narrowing down your search criteria.</h2>
+{{else}}
+  <h2>We found {{numResults}} delicious recipes. Which one will you try?</h2>
+{{/if}}
+
+<form id="searchForm">
+  <label for="searchQuery">Search by Recipe Name:</label>
+  <input type="text" id="searchQuery" name="name" placeholder="Enter recipe name">
+  <button type="submit" formaction="/searchByName">Search</button>
+</form>
+
+{{#if numResults}}
+  <ul>
+    {{#each recipes}}
+      <li>
+        <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
+        <h4>Rating: {{avg_rating}}/5</h4>
+        <p>{{description}}</p>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No recipes found.</p>
+{{/if}}

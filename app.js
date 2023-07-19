@@ -49,7 +49,6 @@ app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 
 app.get('/prediction', userControl.getPredictionOptions); 
-app.post('/ingredients', userControl.saveIngredient);
 
 
 app.use(function(req, res, next) {
@@ -63,6 +62,19 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.get('/searchByName', async (req, res, next) => {
+  try {
+    const { name } = req.query;
+    const regex = new RegExp(name, 'i');
+    const recipes = await Recipe.find({ name: regex }).limit(20);
+    res.render('searchByName', { recipes });
+  } catch (error) {
+    console.error(error);
+    res.render('error');
+  }
+});
+
 
 
 

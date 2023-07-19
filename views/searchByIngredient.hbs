@@ -1,0 +1,19 @@
+<h1>Search Results by Ingredient</h1>
+
+{{#if recipes}}
+  <h2>Recipes Found: {{numResults}}</h2>
+  <ul>
+    {{#each recipes}}
+      <li>
+        <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
+        <h4>Rating: {{avg_rating}}/5</h4>
+        <p>
+        This recipe has {{matchedIngredients}} out of your {{totalIngredients}} ingredients.
+        </p>
+
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No recipes found.</p>
+{{/if}}

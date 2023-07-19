@@ -1,29 +1,34 @@
 <h1>Edit Recipe</h1>
 
+<a href="/users">Cancel</a>
+
 <form action="/users/recipes/{{recipe._id}}" method="POST">
   <label for="name">Name:</label>
-  <input type="text" id="name" name="name" value="{{recipe.name}}" required>
-  <br>
+  <input type="text" id="name" name="name" value="{{recipe.name}}" required><br>
+
   <label for="minutes">Minutes:</label>
-  <input type="number" id="minutes" name="minutes" value="{{recipe.minutes}}" required>
-  <br>
+  <input type="number" id="minutes" name="minutes" value="{{recipe.minutes}}" required><br>
+
   <label for="ingredients">Ingredients:</label>
-  <div id="ingredientsContainer">
+  <textarea id="ingredients" name="ingredients" rows="4" cols="50" required>
     {{#each recipe.ingredients}}
-      <input type="text" id="ingredients" name="ingredients" value="{{this}}" oninput="getPredictionOptions(this.value)" autocomplete="off">
+    {{this}}
     {{/each}}
-    <div id="autocompletionOptions" class="dropdown-menu"></div>
-  </div>
-  <br>
+  </textarea><br>
+
   <label for="steps">Steps:</label>
   <textarea id="steps" name="steps" rows="4" cols="50" required>
     {{#each recipe.steps}}
-      {{this}}
+    {{this}}
     {{/each}}
-  </textarea>
-  <br>
+  </textarea><br>
+
   <label for="description">Description:</label>
-  <textarea id="description" name="description" required>{{recipe.description}}</textarea>
-  <br>
+  <textarea id="description" name="description" required>{{recipe.description}}</textarea><br>
+
   <button type="submit">Update Recipe</button>
+</form>
+
+<form action="/users/recipes/{{recipe._id}}/delete" method="POST">
+  <button type="submit">Delete Recipe</button>
 </form>

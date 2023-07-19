@@ -1,15 +1,149 @@
-<h1>Welcome to the Recipe Portal</h1>
-{{#if recipes}}
-  <h2>Enjoy one of the favorite recipes!</h2>
-  <ul>
-    {{#each recipes}}
-      <li>
-        <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
-        <h4>Rating: {{avg_rating}}/5</h4>
-        <p>{{description}}</p>
-      </li>
-    {{/each}}
-  </ul>
-{{else}}
-  <p>No recipes found.</p>
-{{/if}}
+<h1>Welcome to the Recipe Home!</h1>
+
+<form id="searchForm">
+  <label for="searchQuery">Search by Recipe Name:</label>
+  <input type="text" id="searchQuery" name="name" placeholder="Enter recipe name">
+  <button type="submit" formaction="/searchByName">Search</button>
+</form>
+
+<form id="searchForm">
+<label for="ingredients">Search by Ingredient:</label>
+<textarea id="ingredients" name="ingredients" rows="4" cols="50" oninput="getAutocompletionOptions(this.value)" autocomplete="off" required></textarea>
+<div id="autocompletionOptions" class="dropdown-menu"></div>
+<button type="submit" formaction="/searchByIngredient">Search</button>
+</form>
+
+<div id="recipesContainer">
+  {{#if recipes}}
+    <h2>Some of our Top Recipes!</h2>
+    <ul>
+      {{#each recipes}}
+        <li>
+          <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
+          <h4>Rating: {{avg_rating}}/5</h4>
+          <p>{{description}}</p>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <p>No recipes found.</p>
+  {{/if}}
+</div>
+
+<script>
+  const ingredientsTextarea = document.getElementById('ingredients');
+  const autocompletionOptions = document.querySelector('#autocompletionOptions');
+  let currentOptionIndex = -1;
+
+  ingredientsTextarea.addEventListener('input', (event) => {
+    const value = event.target.value;
+    getAutocompletionOptions(value);
+  });
+
+  document.addEventListener('click', (event) => {
+    const isAutocompleteOption = event.target.closest('.dropdown-item');
+    const isIngredientsTextarea = event.target === ingredientsTextarea;
+
+    if (!isAutocompleteOption && !isIngredientsTextarea) {
+      autocompletionOptions.style.display = 'none';
+    }
+  });
+
+  function getAutocompletionOptions(value) {
+    const lastLine = value.trim().split('\n').pop().trim();
+
+    if (lastLine !== '') {
+      fetch('/prediction?query=' + encodeURIComponent(lastLine))
+        .then((response) => response.json())
+        .then((data) => {
+          autocompletionOptions.innerHTML = '';
+
+          if (data.length > 0) {
+            data.forEach((option, index) => {
+              const listItem = document.createElement('div');
+              listItem.classList.add('dropdown-item');
+              listItem.textContent = option.ingredient;
+              listItem.addEventListener('click', () => selectOption(index));
+              autocompletionOptions.style.display = 'block';
+              autocompletionOptions.appendChild(listItem);
+            });
+          } else {
+            autocompletionOptions.style.display = 'none';
+          }
+
+          currentOptionIndex = -1;
+          highlightOption(currentOptionIndex);
+        });
+    } else {
+      autocompletionOptions.style.display = 'none';
+    }
+  }
+
+  function highlightOption(index) {
+    const options = autocompletionOptions.children;
+
+    for (let i = 0; i < options.length; i++) {
+      options[i].classList.toggle('highlighted', i === index);
+    }
+  }
+
+  function selectOption(index) {
+    const options = autocompletionOptions.children;
+
+    if (index >= 0 && index < options.length) {
+      const selectedOption = options[index];
+      const selectedValue = selectedOption.textContent;
+      addIngredientToList(selectedValue);
+    }
+
+    autocompletionOptions.style.display = 'none';
+    currentOptionIndex = -1;
+  }
+
+  function addIngredientToList(ingredient) {
+    const currentText = ingredientsTextarea.value.trim();
+    const lines = currentText.split('\n');
+    const lastLine = lines[lines.length - 1].trim();
+
+    // Remove the last line from the textarea
+    const updatedText = currentText.substring(0, currentText.lastIndexOf(lastLine));
+
+    // Append the selected ingredient without duplication
+    ingredientsTextarea.value = updatedText + ingredient + '\n';
+
+    ingredientsTextarea.focus();
+  }
+
+</script>
+
+<style>
+  .dropdown-menu {
+    position: absolute;
+    display: none;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+  }
+
+  .dropdown-item {
+    display: block;
+    padding: 0.5rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item.highlighted {
+    background-color: #f8f9fa;
+  }
+</style>

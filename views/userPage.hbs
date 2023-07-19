@@ -1,3 +1,5 @@
+<!-- userPage.hbs -->
+
 <h1>
   Welcome
   {{#if user.firstName}}
@@ -15,6 +17,7 @@
 
 <div>
   <h2>My Recipes</h2>
+  <a href="/users/recipes/new">Add New Recipe</a>
   <ul>
     {{#each recipes}}
     <li><a href="/recipes/{{this._id}}">{{this.name}}</a></li>
@@ -35,7 +38,11 @@
         {{/each}}
         </ol>
     </li>
+    <li>
+      <form action="/users/recipes/{{this._id}}/edit" method="GET">
+        <button type="submit">Edit Recipe</button>
+      </form>
+    </li>
     {{/each}}
   </ul>
-  <a href="/users/recipes/new">Add New Recipe</a>
 </div>

@@ -4,16 +4,181 @@
   <input type="text" id="name" name="name" /><br />
   <label for="minutes">Minutes:</label>
   <input type="number" id="minutes" name="minutes" /><br />
-  
+
   <label for="steps">Steps:</label>
   <textarea id="steps" name="steps" rows="4" cols="50"></textarea><br />
-  
-  <label for="ingredients">Ingredients:</label>
-  <textarea id="ingredients" name="ingredients" rows="4" cols="50"></textarea><br />
 
+  <label for="ingredients">Ingredients:</label>
+  <div id="ingredientsContainer">
+    <input type="text" id="ingredients" name="ingredients" oninput="getAutocompletionOptions(this.value)" autocomplete="off"/>
+    <div id="autocompletionOptions" class="dropdown-menu"></div>
+  </div>
+
+  <div id="selectedIngredientsContainer">
+    <ul id="selectedIngredients"></ul>
+    <input type="hidden" id="selectedIngredientsInput" name="selectedIngredients" />
+  </div>
+
+  <div id="predictionContainer"></div>
 
   <label for="description">Description:</label>
   <textarea id="description" name="description"></textarea><br />
   <input type="hidden" id="user" name="user" value="<%= user._id %>" /> 
   <button type="submit">Create Recipe</button>
 </form>
+
+<script>
+const ingredientsInput = document.getElementById('ingredients');
+const autocompletionOptions = document.querySelector('#ingredientsContainer .dropdown-menu');
+const selectedIngredients = document.getElementById('selectedIngredients');
+let currentOptionIndex = -1;
+
+ingredientsInput.addEventListener('input', (event) => {
+  const value = event.target.value;
+  getAutocompletionOptions(value);
+});
+
+ingredientsInput.addEventListener('keydown', (event) => {
+  const { key } = event;
+
+  if (key === 'ArrowUp' && currentOptionIndex > 0) {
+    currentOptionIndex--;
+    highlightOption(currentOptionIndex);
+  } else if (key === 'ArrowDown' && currentOptionIndex < autocompletionOptions.children.length - 1) {
+    currentOptionIndex++;
+    highlightOption(currentOptionIndex);
+  } else if (key === 'Enter') {
+    event.preventDefault();
+    if (currentOptionIndex >= 0) {
+      selectOption(currentOptionIndex);
+      ingredientsInput.value = ''; // Clear the text box
+    } else {
+      addCustomIngredient();
+    }
+  }
+});
+
+document.addEventListener('click', (event) => {
+  const isAutocompleteOption = event.target.closest('.dropdown-item');
+  const isIngredientsInput = event.target === ingredientsInput;
+
+  if (!isAutocompleteOption && !isIngredientsInput) {
+    autocompletionOptions.style.display = 'none';
+  }
+});
+
+function getAutocompletionOptions(value) {
+  fetch('/prediction?query=' + encodeURIComponent(value))
+    .then((response) => response.json())
+    .then((data) => {
+      autocompletionOptions.innerHTML = '';
+
+      if (data.length > 0) {
+        data.forEach((option, index) => {
+          const listItem = document.createElement('div');
+          listItem.classList.add('dropdown-item');
+          listItem.textContent = option.ingredient;
+          listItem.addEventListener('click', () => selectOption(index));
+          autocompletionOptions.style.display = 'block';
+          autocompletionOptions.appendChild(listItem);
+        });
+      } else {
+        autocompletionOptions.style.display = 'none';
+      }
+
+      currentOptionIndex = -1;
+      highlightOption(currentOptionIndex);
+    });
+}
+
+function highlightOption(index) {
+  const options = autocompletionOptions.children;
+
+  for (let i = 0; i < options.length; i++) {
+    options[i].classList.toggle('highlighted', i === index);
+  }
+}
+
+function selectOption(index) {
+    const options = autocompletionOptions.children;
+
+    if (index >= 0 && index < options.length) {
+      const selectedOption = options[index];
+      const selectedValue = selectedOption.textContent;
+      addIngredientToList(selectedValue);
+      saveIngredientToDatabase(selectedValue);
+      ingredientsInput.value = ''; // Clear the text box
+    }
+
+    autocompletionOptions.style.display = 'none';
+    currentOptionIndex = -1;
+}
+
+function addCustomIngredient() {
+  const ingredient = ingredientsInput.value.trim();
+
+  if (ingredient !== '') {
+    addIngredientToList(ingredient);
+    saveIngredientToDatabase(ingredient);
+    ingredientsInput.value = ''; // Clear the text box
+  }
+
+  autocompletionOptions.style.display = 'none';
+  currentOptionIndex = -1;
+}
+
+function addIngredientToList(ingredient) {
+  const selectedIngredient = document.createElement('li');
+  selectedIngredient.textContent = ingredient;
+  selectedIngredients.appendChild(selectedIngredient);
+}
+
+function saveIngredientToDatabase(ingredient) {
+  fetch('/ingredients', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ingredient }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Ingredient saved:', data);
+    })
+    .catch((error) => {
+      console.error('Error saving ingredient:', error);
+    });
+}
+</script>
+
+<style>
+  .dropdown-menu {
+    position: absolute;
+    display: none;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+  }
+
+  .dropdown-item {
+    display: block;
+    padding: 0.5rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item.highlighted {
+    background-color: #f8f9fa;
+  }
+</style>

@@ -52,7 +52,7 @@ const getEditRecipePage = async (req, res) => {
 
     const splitArray = ingredientsCheck.split(",");
     const correctedArray = splitArray.map((ingredient) => {
-      const match = ingredient.match(/[a-zA-Z0-9]+/);
+      const match = ingredient.match(/[\w\s.-]+/);
       return match ? match[0] : ingredient;
     });
 
@@ -68,6 +68,9 @@ const getEditRecipePage = async (req, res) => {
 
     console.log(correctedArray);
     console.log(typeof correctedArray);
+
+    console.log(recipe.steps);
+    console.log(typeof recipe.steps);
 
     res.render('editRecipe', { recipe: correctedItemsEdit });
   } catch (error) {

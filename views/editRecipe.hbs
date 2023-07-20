@@ -12,16 +12,17 @@
 <label for="ingredients">Ingredients:</label>
 <textarea id="ingredients" name="ingredients" rows="4" cols="50" required>
   {{#each recipe.ingredients}}
-  {{this}}
+    {{this}}{{'\n'}}
   {{/each}}
 </textarea><br>
 
-  <label for="steps">Steps:</label>
-  <textarea id="steps" name="steps" rows="4" cols="50" required>
-    {{#each recipe.steps}}
-    {{this}}
-    {{/each}}
-  </textarea><br>
+<label for="steps">Steps:</label>
+<textarea id="steps" name="steps" rows="4" cols="50" required>
+  {{#each recipe.steps}}
+    {{this}}{{'\n'}}
+  {{/each}}
+</textarea><br>
+
 
   <label for="description">Description:</label>
   <textarea id="description" name="description" required>{{recipe.description}}</textarea><br>

@@ -1,18 +1,22 @@
-<div >
-  <h2>Login</h2>
-  <form action="/auth/login" method="POST">
+<div class="login">
+    <br>
+    <h1>Login</h1>
+    <div class="loginBox" >
+    <img src="/images/chef.png" alt="Profile" class="chef">
+    <form action="/auth/login" method="POST" class="loginInfo">
+        <br>
+        <label for="userName">Username</label>
+        <input id="userName" type="text" name="userName"/>
+        <br>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password"/>
+        <br>
+        <button type="submit" class="loginButton">Login</button>
 
-    <label for="userName">Username</label>
-    <input id="userName" type="text" name="userName"/>
+        {{#if errorMessage}}
+        <p>{{errorMessage}}</p>
+        {{/if}}
+    </form>
 
-    <label for="password">Password</label>
-    <input id="password" type="password" name="password"/>
-
-    <button type="submit">Login</button>
-
-    {{#if errorMessage}}
-      <p>{{errorMessage}}</p>
-    {{/if}}
-  </form>
-
+    </div>
 </div>

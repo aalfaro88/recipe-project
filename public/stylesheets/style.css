@@ -1,10 +1,230 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 150px;
+}
+
+.logo {
+  height: 140px;
+}
+
+.logo:hover {
+  content: url("/images/logoHover.png");
+}
+
+nav a {
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.2rem;
+  font-weight: bolder;
+  color: rgb(255, 145, 77);
+  
+}
+
+nav a:hover {
+  color: rgb(255, 87, 34);
+}
+
+.nav1{
+  display: flex;
+  margin-left: 20px;
+  justify-content: flex-start;
+  align-items: center;
+  width: 50%;
+}
+
+.nav2{
+  display: flex;
+  margin-right: 50px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 50%;
+}
+
+.nav2 p{
+  font-size: 1.2rem;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.profileIMG{
+  height: 45px;
+}
+
+.profileIMG:hover {
+  content: url("/images/profileHover.png");
+}
+
+body {
+  
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px ;
+}
+
+
 
 a {
   color: #00B7FF;
+}
+
+.login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(240, 240, 240);
+}
+
+.loginBox {
+  display: flex;
+  flex-direction: row ;
+  align-items: center;
+  justify-content: center;
+  border: solid;
+  border-radius: 15px;
+  border-width: 5px;
+  border-color: rgb(255, 145, 77);
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 400px;
+  width: 350px;
+}
+.chef{
+  height: 300px;
+}
+
+.loginInfo{
+  display: flex;
+  flex-direction: column;
+  max-width: 40%;
+  width: 40%;
+}
+
+.loginInfo a{
+  margin: 10px;
+}
+
+.loginButton{
+  background-color: rgba(255, 145, 77, 0.698);
+  border-color: rgba(255, 145, 77, 0.698);
+  color: white;
+  height: 30px;
+  font-weight: bolder;
+}
+
+.loginButton:hover {
+  background-color: rgba(255, 145, 77, 0.929);
+  border-color: rgba(255, 145, 77, 0.859);
+  color: white;
+
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  margin: 10px;
+}
+
+.userInfo div{
+  margin: 15px;
+}
+
+.recipeContainer {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.recipeTitle {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.add{
+  margin-left: 20px;
+  height: 25px;
+}
+
+.add:hover {
+  content: url("/images/addHover.png");
+}
+
+.horizontalView{
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 10px;
+  margin-left: 30px;
+}
+
+.horizontalView ul,
+.horizontalView ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.horizontalView li {
+  flex-basis: 100%;  
+
+}
+
+
+.horizontalView li:nth-child(1){
+  flex-basis: 10%;
+  
+}
+
+.horizontalView li:nth-child(2) {
+  flex-basis: 20%;
+}
+
+.horizontalView li:nth-child(3){
+  flex-basis: 15%;
+}
+
+.horizontalView li:nth-child(4) {
+  flex-basis: 45%;
+}
+
+.horizontalView li:nth-child(5) {
+  flex-basis: 5%;
+}
+
+
+
+.horizontalView > li.recipeDiv::before {
+  content: "";
+  border-top: 1px solid #ccc;
+  display: block;
+}
+
+
+
+
+
+#ingredients {
+  height: 100px; 
+  overflow-y: auto; 
+  white-space: nowrap;
+}
+
+#steps {
+  height: 100px; 
+  overflow-y: auto; 
+  white-space: nowrap;
 }
 
 

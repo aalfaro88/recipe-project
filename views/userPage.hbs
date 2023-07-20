@@ -1,46 +1,65 @@
-<h1>
-  Welcome
-  {{#if user.firstName}}
-    , {{user.firstName}}
-  {{/if}}
-  !
-</h1>
-
-<div>
-  <h2>Profile</h2>
-  <p>Email: {{user.email}}</p>
-  <p>Username: {{user.userName}}</p>
-  <a href="/users/edit">Edit Profile</a>
+<div class="login">
+    <br>
+    <h1>
+    Welcome
+    {{#if user.firstName}}
+        , {{user.firstName}}
+    {{/if}}
+    !
+    </h1>
+    <br>
+        <h2>General Information</h2>
+    <div class="userInfo">
+        <div >
+            <p><b>Name: </b> {{user.firstName}}</p>
+            <p><b>Last Name: </b> {{user.lastName}}</p>
+            <p><b>Email: </b> {{user.email}}</p>
+            <p><b>Username: </b>{{user.userName}}</p>
+        </div>
+        <div>
+            <a href="/users/edit">Edit Profile</a>
+        </div>
+    </div>
 </div>
 
-<div>
-  <h2>My Recipes</h2>
-  <a href="/users/recipes/new">Add New Recipe</a>
-  <ul>
-    {{#each recipes}}
-    <li><a href="/recipes/{{this._id}}">{{this.name}}</a></li>
-    <li>{{this.description}}</li>
-    <li>
-        Ingredients:
-        <ul>
-        {{#each this.ingredients}}
-            <li>{{this}}</li>
+<div class="recipeContainer">
+    <div class="recipeTitle">
+        <h2>My Recipes</h2>
+        <a href="/users/recipes/new">
+            <img src="/images/add.png" alt="Add" class="add"/>
+        </a>
+    </div>
+    <br>
+    <div>
+        {{#each recipes}}
+        <div>
+            <ul class="horizontalView">
+                <li class="recipeDiv"><a href="/recipes/{{this._id}}">{{this.name}}</a></li>
+                <li class="recipeDiv"><b>Description:</b><br>{{this.description}}</li>
+                <li class="recipeDiv">
+                    <b>Ingredients:</b>
+                    <ul>
+                        {{#each this.ingredients}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
+                </li>
+                <li class="recipeDiv">
+                    <b>Steps:</b>:
+                    <ol>
+                        {{#each this.steps}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ol>
+                </li>
+                <li class="recipeDiv">
+                    <form action="/users/recipes/{{this._id}}/edit" method="GET">
+                        <button type="submit">Edit Recipe</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
         {{/each}}
-        </ul>
-    </li>
-    <li>
-        Steps:
-        <ol>
-        {{#each this.steps}}
-            <li>{{this}}</li>
-        {{/each}}
-        </ol>
-    </li>
-    <li>
-      <form action="/users/recipes/{{this._id}}/edit" method="GET">
-        <button type="submit">Edit Recipe</button>
-      </form>
-    </li>
-    {{/each}}
-  </ul>
+    </div>
 </div>
+

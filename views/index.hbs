@@ -19,7 +19,7 @@
     <ul>
       {{#each recipes}}
         <li>
-          <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
+          <h3><a href="/recipes/{{this._id}}">{{this.name}}</a></h3>
           <h4>Rating: {{avg_rating}}/5</h4>
           <p>{{description}}</p>
         </li>

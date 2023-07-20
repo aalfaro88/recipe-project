@@ -68,8 +68,9 @@ const createRecipe = async (req, res) => {
         steps: steps.trim().split('\n').map((step) => step.trim()),
         description,
         user: userId,
-        ingredients: ingredientsRecipe,
+        ingredients: JSON.stringify(ingredientsRecipe), 
       });
+      
   
       const user = await User.findById(userId).populate('recipes');
       user.recipes.push(newRecipe);
@@ -124,7 +125,8 @@ const getEditRecipePage = async (req, res) => {
     }
 };
 
-  
+
+
 module.exports = {
   getUser,
   getUserPage,

@@ -7,8 +7,18 @@ router.get('/', async function(req, res, next) {
   try {
     if (req.session.user) {
       const userId = req.session.user._id;
-      const userRecipes = await Recipe.find({ user: userId });
-      res.render('userPage', { user: req.session.user, recipes: userRecipes });
+      const recipes = await Recipe.find({ user: userId });
+
+      // Parse the ingredients field for each recipe
+      const parsedRecipes = recipes.map((recipe) => {
+        const parsedIngredients = JSON.parse(recipe.ingredients);
+        return {
+          ...recipe.toObject(),
+          ingredients: parsedIngredients,
+        };
+      });
+
+      res.render('userPage', { user: req.session.user, recipes: parsedRecipes });
     } else {
       res.redirect('/auth/login');
     }
@@ -33,7 +43,43 @@ router.post('/recipes', async function(req, res, next) {
   }
 });
 
-router.get('/recipes/:id/edit', userControl.getEditRecipePage);
+const getEditRecipePage = async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    const recipe = await Recipe.findById(recipeId);
+
+    const ingredientsCheck = recipe.ingredients;
+
+    const splitArray = ingredientsCheck.split(",");
+    const correctedArray = splitArray.map((ingredient) => {
+      const match = ingredient.match(/[a-zA-Z0-9]+/);
+      return match ? match[0] : ingredient;
+    });
+
+    if (!recipe) {
+      return res.render('error', { error: 'Recipe not found' });
+    }
+
+    const correctedItemsEdit = {
+      ...recipe.toObject(),
+      ingredients: correctedArray,
+      user: req.session.user,
+    };
+
+    console.log(correctedArray);
+    console.log(typeof correctedArray);
+
+    res.render('editRecipe', { recipe: correctedItemsEdit });
+  } catch (error) {
+    console.error(error);
+    res.render('error');
+  }
+};
+
+
+
+router.get('/recipes/:id/edit', getEditRecipePage);
+
 
 router.post('/recipes/:id', async function(req, res, next) {
   try {

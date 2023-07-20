@@ -1,0 +1,25 @@
+<h1>{{recipe.name}}</h1>
+<p>Preparation Time: {{recipe.minutes}} minutes</p>
+<p>Description: {{recipe.description}}</p>
+
+<h2>Ingredients</h2>
+<ul>
+  {{#each recipe.ingredients}}
+    <li>{{this}}</li>
+  {{/each}}
+</ul>
+
+<h2>Steps</h2>
+<ol>
+  {{#each recipe.steps}}
+    <li>{{this}}</li>
+  {{/each}}
+</ol>
+
+<button onclick="goBack()">Back</button>
+
+<script>
+  function goBack() {
+    window.history.go(-1);
+  }
+</script>

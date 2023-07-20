@@ -12,8 +12,11 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
 var userControl = require('./routes/userControl');
-
+var Recipe = require('./models/Recipe');
 var app = express();
+var recipeRouter = require('./routes/recipe');
+
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -46,6 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/recipes', recipeRouter);
 app.use('/auth', authRouter);
 
 app.get('/prediction', userControl.getPredictionOptions); 
@@ -74,9 +78,6 @@ app.get('/searchByName', async (req, res, next) => {
     res.render('error');
   }
 });
-
-
-
 
 mongoose
   .connect(process.env.MONGODB_URI)

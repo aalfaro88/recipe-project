@@ -51,51 +51,58 @@ router.get('/searchByIngredient', async (req, res) => {
     const searchTerms = ingredients.split('\n').map((line) => line.trim()).filter((term) => term !== '');
 
     console.log('Search Terms:', searchTerms);
+    console.log('Search Terms Type:', typeof searchTerms);
 
-    const regexConditions = searchTerms.map((term) => ({
-      ingredients: { $regex: term, $options: 'i' },
-    }));
-
-    const recipes = await Recipe.find({ $or: regexConditions }).limit(40);
+    // Fetch all recipes from the database
+    const recipes = await Recipe.find();
 
     const updatedRecipes = recipes.map((recipe) => {
-      let matchedIngredients = 0;
+      let temporalIngredients = [];
 
-      searchTerms.forEach((term) => {
-        const matched = recipe.ingredients[0].includes(term);
-        if (matched) {
-          matchedIngredients++;
-        }
-      });
+      try {
+        temporalIngredients = JSON.parse(recipe.ingredients);
+      } catch {
+        temporalIngredients = recipe.ingredients.replace(/[\[\]']/g, '').split(',').map((ingredient) => ingredient.trim());
+      }
+
+      const matchedIngredients = temporalIngredients.filter((ingredient) => {
+        const lowerIngredient = ingredient.toLowerCase();
+        return searchTerms.some((term) => lowerIngredient.includes(term.toLowerCase()));
+      }).length;
+
+      const totalIngredients = searchTerms.length;
+
+      const finalMatchedIngredients = Math.min(matchedIngredients, totalIngredients);
 
       return {
         ...recipe.toObject(),
-        matchedIngredients,
-        totalIngredients: searchTerms.length,
+        matchedIngredients: finalMatchedIngredients,
+        totalIngredients,
       };
     });
 
     updatedRecipes.sort((a, b) => {
       if (a.matchedIngredients !== b.matchedIngredients) {
         return b.matchedIngredients - a.matchedIngredients;
-      } else if (a.matchedIngredients === 0) {
-        return b.avg_rating - a.avg_rating;
-      } else {
-        const aRatio = a.matchedIngredients / a.totalIngredients;
-        const bRatio = b.matchedIngredients / b.totalIngredients;
-        return bRatio - aRatio;
       }
+      // Sort by average rating if the number of matched ingredients is the same
+      return b.avg_rating - a.avg_rating;
     });
 
     const numResults = updatedRecipes.length;
-    const showLimitedResults = numResults > 40;
 
-    res.render('searchByIngredient', {
-      recipes: updatedRecipes,
-      numResults,
-      showLimitedResults,
-      user: req.session.user,
-    });
+    const delayTime = 1.5 * 1000;
+    setTimeout(() => {
+      const numRecipesToRender = 20;
+      const recipesToRender = updatedRecipes.slice(0, numRecipesToRender);
+
+      res.render('searchByIngredient', {
+        recipes: recipesToRender,
+        numResults,
+        user: req.session.user,
+      });
+    }, delayTime);
+
   } catch (error) {
     console.error(error);
     res.status(500).render('error', {
@@ -103,7 +110,5 @@ router.get('/searchByIngredient', async (req, res) => {
     });
   }
 });
-
-
 
 module.exports = router;

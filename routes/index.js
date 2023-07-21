@@ -53,8 +53,10 @@ router.get('/searchByIngredient', async (req, res) => {
     console.log('Search Terms:', searchTerms);
     console.log('Search Terms Type:', typeof searchTerms);
 
+    const limitSearch = 50000
 
-    const recipes = await Recipe.find().limit(70000).select('_id name ingredients avg_rating');
+
+    const recipes = await Recipe.find().limit(limitSearch).select('_id name ingredients avg_rating');
     console.log("FIRST RECIPE",recipes[0])
 
 

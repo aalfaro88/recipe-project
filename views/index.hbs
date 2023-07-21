@@ -1,24 +1,39 @@
-<h1>Welcome to the Recipe Home!</h1>
+<div class="mainSearch">
+    <div class="title">
+        <h1>What are we going to prepare today?!</h1>
+    </div>
 
-<form id="searchForm">
-  <label for="searchQuery">Search by Recipe Name:</label>
-  <input type="text" id="searchQuery" name="name" placeholder="Enter recipe name">
-  <button type="submit" formaction="/searchByName">Search</button>
-</form>
+    <div class="searchSection">
+        
+        <form id="searchForm" class="searchSubsection">
+            <label for="searchQuery">Search by Name</label>
+            <br>
+            <input type="text" id="searchQuery" name="name" placeholder="What do you feel like eating?">
+            <br>
+            <button type="submit" formaction="/searchByName" class="searchButton">Search</button>
+        </form>
+        
+        <form id="searchForm" class="searchSubsection">
+            <label for="ingredients">Search by Ingredients</label>
+            <br>
+            <textarea id="ingredients" name="ingredients" rows="4" cols="50" oninput="getAutocompletionOptions(this.value)" autocomplete="off" required placeholder="Explore the possibilities!
+            Raid your fridge and share what you've got!
+            Together, we'll find a delicious recipe just for you!"></textarea>
+            <div id="autocompletionOptions" class="dropdown-menu"></div>
+            <br>
+            <button type="submit" formaction="/searchByIngredient" class="searchButton">Search</button>
+        </form>
+    
+    </div>
+</div>
 
-<form id="searchForm">
-<label for="ingredients">Search by Ingredient:</label>
-<textarea id="ingredients" name="ingredients" rows="4" cols="50" oninput="getAutocompletionOptions(this.value)" autocomplete="off" required></textarea>
-<div id="autocompletionOptions" class="dropdown-menu"></div>
-<button type="submit" formaction="/searchByIngredient">Search</button>
-</form>
 
 <div id="recipesContainer">
   {{#if recipes}}
-    <h2>Some of our Top Recipes!</h2>
-    <ul>
+    <h2 class="recipesTitle">Explore Our Top Recipes</h2>
+    <ul class="recipesList">
       {{#each recipes}}
-        <li>
+        <li class="recipeItem">
           <h3><a href="/recipes/{{this._id}}">{{this.name}}</a></h3>
           <h4>Rating: {{avg_rating}}/5</h4>
           <p>{{description}}</p>
@@ -29,6 +44,7 @@
     <p>No recipes found.</p>
   {{/if}}
 </div>
+
 
 <script>
   const ingredientsTextarea = document.getElementById('ingredients');

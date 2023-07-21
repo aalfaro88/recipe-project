@@ -10,9 +10,9 @@
       <a href="/">
       <img src="/images/logo.png" alt="Logo" class="logo"/>
       </a>
-      <!-- <a href="/">Home</a> -->
       </div>
       <div class="nav2">
+      {{#unless isRecipePage}}
       {{#if user}}
         <a href="/users">
         <img src="/images/profile.png" alt="Profile" class="profileIMG"/>
@@ -26,9 +26,12 @@
         <p>|</p>
         <a href="/auth/signup">Join our Family</a>
       {{/if}}
+      {{/unless}}
       </div>
     </nav>
+  
     {{{body}}}
+    
   </body>
 </html>
 

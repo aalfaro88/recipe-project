@@ -45,65 +45,120 @@ router.post('/recipes', async function(req, res, next) {
 
 const getEditRecipePage = async (req, res) => {
   try {
-    const recipeId = req.params.id;
-    const recipe = await Recipe.findById(recipeId);
+      const recipeId = req.params.id;
+      const recipe = await Recipe.findById(recipeId);
 
-    const ingredientsCheck = recipe.ingredients;
+      const ingredientsCheck = recipe.ingredients;
 
-    const splitArray = ingredientsCheck.split(",");
-    const correctedArray = splitArray.map((ingredient) => {
-      const match = ingredient.match(/[\w\s.-]+/);
-      return match ? match[0] : ingredient;
-    });
+      const splitArray = ingredientsCheck.split(",");
+      const correctedArray = splitArray.map((ingredient) => {
+          const match = ingredient.match(/[\w\s.-]+/);
+          return match ? match[0] : ingredient;
+      });
 
-    if (!recipe) {
-      return res.render('error', { error: 'Recipe not found' });
-    }
+      if (!recipe) {
+          return res.render('error', { error: 'Recipe not found' });
+      }
 
-    const correctedItemsEdit = {
-      ...recipe.toObject(),
-      ingredients: correctedArray,
-      user: req.session.user,
-    };
+      const correctedItemsEdit = {
+          ...recipe.toObject(),
+          ingredients: correctedArray,
+          user: req.session.user,
+      };
 
-    console.log(correctedArray);
-    console.log(typeof correctedArray);
+      console.log(correctedArray);
+      console.log(typeof correctedArray);
 
-    console.log(recipe.steps);
-    console.log(typeof recipe.steps);
+      console.log(recipe.steps);
+      console.log(typeof recipe.steps);
 
-    res.render('editRecipe', { recipe: correctedItemsEdit });
+      res.render('editRecipe', { recipe: correctedItemsEdit, isRecipePage: true });
   } catch (error) {
-    console.error(error);
-    res.render('error');
+      console.error(error);
+      res.render('error');
   }
 };
-
-
 
 router.get('/recipes/:id/edit', getEditRecipePage);
 
 
+router.get('/recipes/:id/edit', getEditRecipePage);
+
 router.post('/recipes/:id', async function(req, res, next) {
   try {
     const recipeId = req.params.id;
-    const { name, minutes, steps, description, ingredients } = req.body;
     const recipe = await Recipe.findById(recipeId);
+
     if (!recipe) {
       return res.render('error', { error: 'Recipe not found.' });
     }
+
+    console.log('Original Recipe Ingredients:');
+    console.log(JSON.parse(recipe.ingredients));
+    console.log('Type:', typeof recipe.ingredients);
+
+    console.log('Original Recipe Steps:');
+    console.log(recipe.steps);
+    console.log('Type:', typeof recipe.steps);
+
+    const { name, minutes, steps, description, ingredients } = req.body;
+
+    const updatedIngredientsArray = ingredients
+      .split('\n')
+      .map((ingredient) => ingredient.trim())
+      .filter((ingredient) => ingredient !== '');
+
+    console.log('Updated Recipe Ingredients:');
+    console.log(updatedIngredientsArray);
+    console.log('Type:', typeof updatedIngredientsArray);
+
+    const updatedStepsArray = steps
+      .split('\n')
+      .map((step) => step.trim())
+      .filter((step) => step !== '');
+
+    console.log('Updated Recipe Steps:');
+    console.log(updatedStepsArray);
+    console.log('Type:', typeof updatedStepsArray);
+
+    const ingredientsMatch = arrayEquality(JSON.parse(recipe.ingredients), updatedIngredientsArray);
+    const stepsMatch = arrayEquality(recipe.steps, updatedStepsArray);
+
+    console.log('Ingredients Match:', ingredientsMatch);
+    console.log('Steps Match:', stepsMatch);
+
+
     recipe.name = name;
     recipe.minutes = minutes;
-    recipe.ingredients = ingredients.trim().split('\n').map(line => line.trim());
-    recipe.steps = steps.trim().split('\n').map((step) => step.trim());
     recipe.description = description;
+    recipe.ingredients = JSON.stringify(updatedIngredientsArray);
+    recipe.steps = updatedStepsArray;
     await recipe.save();
+
+    console.log('Recipe updated successfully');
     res.redirect('/users');
+
+
   } catch (error) {
     console.error(error);
-    res.render('error');
+    res.status(500).json({ error: 'An error occurred while updating the recipe' });
   }
 });
+
+
+function arrayEquality(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 router.post('/recipes/:id/delete', async (req, res) => {
   const recipeId = req.params.id;

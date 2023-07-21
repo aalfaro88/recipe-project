@@ -9,19 +9,13 @@
   <label for="minutes">Minutes:</label>
   <input type="number" id="minutes" name="minutes" value="{{recipe.minutes}}" required><br>
 
-<label for="ingredients">Ingredients:</label>
-<textarea id="ingredients" name="ingredients" rows="4" cols="50" required>
-  {{#each recipe.ingredients}}
-    {{this}}{{'\n'}}
-  {{/each}}
-</textarea><br>
+    <label for="ingredients">Ingredients:</label>
+    <textarea id="ingredients" name="ingredients" rows="4" cols="50" required>{{#each recipe.ingredients}}{{this}}
+    {{/each}}</textarea><br>
 
-<label for="steps">Steps:</label>
-<textarea id="steps" name="steps" rows="4" cols="50" required>
-  {{#each recipe.steps}}
-    {{this}}{{'\n'}}
-  {{/each}}
-</textarea><br>
+    <label for="steps">Steps:</label>
+    <textarea id="steps" name="steps" rows="4" cols="50" required>{{#each recipe.steps}}{{this}}
+    {{/each}}</textarea><br>
 
 
   <label for="description">Description:</label>

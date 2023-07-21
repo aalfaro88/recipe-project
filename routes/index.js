@@ -53,7 +53,7 @@ router.get('/searchByIngredient', async (req, res) => {
     console.log('Search Terms:', searchTerms);
     console.log('Search Terms Type:', typeof searchTerms);
 
-    const recipes = await Recipe.find();
+    const recipes = await Recipe.find().select('_id name ingredients avg_rating');
 
     const updatedRecipes = recipes.map((recipe) => {
       let temporalIngredients = [];

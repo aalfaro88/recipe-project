@@ -6,6 +6,8 @@
 app = "epic-chef-app"
 primary_region = "qro"
 
+
+
 [http_service]
   internal_port = 3000
   force_https = true

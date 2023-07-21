@@ -31,8 +31,10 @@ router.get('/searchByName', async (req, res) => {
     const numResults = recipes.length;
     const showLimitedResults = numResults > 40;
 
+    const limitedRecipes = recipes.slice(0, 60);
+
     res.render('searchByName', {
-      recipes,
+      recipes: limitedRecipes,
       numResults,
       showLimitedResults,
       user: req.session.user,

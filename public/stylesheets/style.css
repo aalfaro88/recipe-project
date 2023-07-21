@@ -368,3 +368,85 @@ a {
 
 
 
+/* good */
+
+.mainContainer {
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 20px;
+  margin: 20px;
+}
+
+.preparationDescriptionBox {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.ingredientsStepsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.ingredientsBox,
+.stepsBox {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+.stepsBox li{
+  margin-bottom: 3px;
+}
+
+.ingredientsBox {
+  grid-column: 1;
+}
+
+.ingredientsBox ul {
+  padding-left: 20px; 
+}
+
+.ingredientsBox li {
+  margin-bottom: 3px;
+}
+
+.stepsBox {
+  grid-column: 2;
+}
+
+.searchButton2 {
+  background-color: #FF914D;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.searchButton2:hover {
+  background-color: #FF5722;
+}
+
+.customOL {
+  list-style: none;
+  counter-reset: custom-counter;
+  padding-left: 20px;
+}
+
+.customOL li {
+  position: relative;
+}
+
+.customOL li:before {
+  content: "Step " counter(custom-counter) ": ";
+  counter-increment: custom-counter;
+  font-weight: bold;
+}

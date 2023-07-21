@@ -1,21 +1,29 @@
-<h1>Search Results by Recipe Name</h1>
-
+<div class="mainSearch">
+    <div class="searchSection">
+        <div class="searchSubsection">
+            <form id="searchForm" class="searchSubsection">
+            <label for="searchQuery">Search by Recipe Name</label>
+            <br>
+            <input type="text" id="searchQuery" name="name" placeholder="Enter recipe name">
+            <br>
+            <button type="submit" formaction="/searchByName" class="searchButton">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<h1 class="recipesTitle">Search Results by Recipe Name</h1>
+<br>
 {{#if showLimitedResults}}
-  <h2>We found {{numResults}} results matching your search.<br>To refine your results, try narrowing down your search criteria.</h2>
+  <h2 class="recipesTitle">We found {{numResults}} results matching your search.<br>To refine your results, try narrowing down your search<br>Showing 60 Results.</h2>
 {{else}}
-  <h2>We found {{numResults}} delicious recipes. Which one will you try?</h2>
+  <h2 class="recipesTitle">We found {{numResults}} delicious recipes. Which one will you try?</h2>
 {{/if}}
 
-<form id="searchForm">
-  <label for="searchQuery">Search by Recipe Name:</label>
-  <input type="text" id="searchQuery" name="name" placeholder="Enter recipe name">
-  <button type="submit" formaction="/searchByName">Search</button>
-</form>
-
 {{#if numResults}}
-  <ul>
+  <ul class="recipesList">
     {{#each recipes}}
-      <li>
+      <li class="recipeItem">
         <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
         <h4>Rating: {{avg_rating}}/5</h4>
         <p>{{description}}</p>
@@ -25,3 +33,4 @@
 {{else}}
   <p>No recipes found.</p>
 {{/if}}
+

@@ -1,9 +1,9 @@
-<h1>Search Results by Ingredient</h1>
+<h1 class="recipesTitle">Search Results by Ingredient</h1>
 
 {{#if recipes}}
-  <ul>
+  <ul class="recipesList">
     {{#each recipes}}
-      <li>
+      <li class="recipeItem">
         <h3><a href="/recipes/{{_id}}">{{name}}</a></h3>
         <h4>Rating: {{avg_rating}}/5</h4>
         <p>
@@ -16,3 +16,4 @@
 {{else}}
   <p>No recipes found.</p>
 {{/if}}
+

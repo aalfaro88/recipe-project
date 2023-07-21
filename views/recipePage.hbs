@@ -1,25 +1,39 @@
-<h1>{{recipe.name}}</h1>
-<p>Preparation Time: {{recipe.minutes}} minutes</p>
-<p>Description: {{recipe.description}}</p>
+<br>
+<h1 class="recipesTitle">{{recipe.name}}</h1>
+<div class="mainContainer">
+  <div class="preparationDescriptionBox">
+    <p><b>Preparation Time: </b>{{recipe.minutes}} minutes</p>
+    <p><b>Description: </b>{{recipe.description}}</p>
+  </div>
 
-<h2>Ingredients</h2>
-<ul>
-  {{#each recipe.ingredients}}
-    <li>{{this}}</li>
-  {{/each}}
-</ul>
+  <div class="ingredientsStepsContainer">
+    <div class="ingredientsBox">
+      <h2>Ingredients</h2>
+      <br>
+      <ul>
+        {{#each recipe.ingredients}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
 
-<h2>Steps</h2>
-<ol>
-  {{#each recipe.steps}}
-    <li>{{this}}</li>
-  {{/each}}
-</ol>
+    <div class="stepsBox">
+      <h2>Steps</h2>
+      <br>
+      <ol class="customOL">
+        {{#each recipe.steps}}
+          <li> {{this}}</li>
+        {{/each}}
+      </ol>
+    </div>
+  </div>
+</div>
 
-<button onclick="goBack()">Back</button>
+<button class="searchButton2" onclick="goBack()">Back</button>
 
 <script>
   function goBack() {
     window.history.go(-1);
   }
 </script>
+

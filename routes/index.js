@@ -53,7 +53,6 @@ router.get('/searchByIngredient', async (req, res) => {
     console.log('Search Terms:', searchTerms);
     console.log('Search Terms Type:', typeof searchTerms);
 
-    // Fetch all recipes from the database
     const recipes = await Recipe.find();
 
     const updatedRecipes = recipes.map((recipe) => {
@@ -67,8 +66,9 @@ router.get('/searchByIngredient', async (req, res) => {
 
       const matchedIngredients = temporalIngredients.filter((ingredient) => {
         const lowerIngredient = ingredient.toLowerCase();
-        return searchTerms.some((term) => lowerIngredient.includes(term.toLowerCase()));
+        return searchTerms.some((term) => lowerIngredient === term.toLowerCase());
       }).length;
+      
 
       const totalIngredients = searchTerms.length;
 
@@ -85,9 +85,9 @@ router.get('/searchByIngredient', async (req, res) => {
       if (a.matchedIngredients !== b.matchedIngredients) {
         return b.matchedIngredients - a.matchedIngredients;
       }
-      // Sort by average rating if the number of matched ingredients is the same
       return b.avg_rating - a.avg_rating;
     });
+    
 
     const numResults = updatedRecipes.length;
 
